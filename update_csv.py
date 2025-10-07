@@ -1,57 +1,31 @@
-from ultralytics import YOLO
+import os
 import datetime
-import csv
 import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
-import os, webbrowser
-import sys
+import csv
 
+# CSVはアプリフォルダ内のuploadsに置く
+CSV_PATH = "uploads/saddle_data.csv"
 
-try:
-    import PyQt6
-    pyqt_path = os.path.join(os.path.dirname(PyQt6.__file__), "Qt6", "plugins", "platforms")
-except ImportError:
-    try:
-        import PyQt5
-        pyqt_path = os.path.join(os.path.dirname(PyQt5.__file__), "Qt", "plugins", "platforms")
-    except ImportError:
-        pyqt_path = None
+# デフォルトの天気・気温（ここをAPIで自動取得も可能）
+weather = "晴れ"
+temperature = 28.5
 
-if pyqt_path:
-    os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = pyqt_path
-
-
-matplotlib.use("Agg")
-
-
-matplotlib.rcParams['font.family'] = 'Meiryo'
-
-
-image_path = "C:/Users/辻亮輔/Desktop/ultralytics/photo/sample5.jpg"
-model_path = "C:/Users/辻亮輔/Desktop/ultralytics/runs/detect/train19/weights/best.pt"
-
-model = YOLO(model_path)
-results = model.predict(source=image_path, conf=0.3)
-
-# 検出されたサドル数
-count = len(results[0].boxes)
-
-
-weather = input("今の天気は？（例：晴れ, 曇り, 雨）：")
-temperature = input("今の気温は？（例：28.5）：")
-
+# 日時
 now = datetime.datetime.now()
 now_str = now.strftime("%Y-%m-%d %H:%M")
 
+# 曜日
 weekday_map = {0: "月", 1: "火", 2: "水", 3: "木", 4: "金", 5: "土", 6: "日"}
 weekday = weekday_map[now.weekday()]
 
+# サドル検出数（ここはYOLOのコードや他の処理に置き換え可能）
+count = 5  # 仮に5台としてサンプル
 
-csv_file = "saddle_data.csv"
-file_exists = os.path.isfile(csv_file)
+# CSVが存在するか確認
+file_exists = os.path.isfile(CSV_PATH)
 
-with open(csv_file, "a", newline="", encoding="cp932") as csvfile:
+# CSVに追記
+with open(CSV_PATH, "a", newline="", encoding="cp932") as csvfile:
     writer = csv.writer(csvfile)
     if not file_exists:
         writer.writerow(["日時", "自転車の数", "天気", "気温", "曜日"])
@@ -59,17 +33,16 @@ with open(csv_file, "a", newline="", encoding="cp932") as csvfile:
 
 print("CSVに記録しました！")
 
+# ここから簡単にグラフを作ることも可能（Render上で保存するだけ）
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
-df = pd.read_csv(csv_file, encoding="cp932")
-
-
+df = pd.read_csv(CSV_PATH, encoding="cp932")
 df["日時"] = pd.to_datetime(df["日時"], errors="coerce")
-
-
 df["曜日天気"] = df["曜日"] + " / " + df["天気"]
 
-
-plt.figure(figsize=(12, 6))
+plt.figure(figsize=(12,6))
 for combo in df["曜日天気"].unique():
     subset = df[df["曜日天気"] == combo]
     plt.plot(subset["日時"], subset["自転車の数"], label=combo, marker="o")
@@ -81,13 +54,8 @@ plt.legend()
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-
-graph_file = "graph.png"
+graph_file = "static/graph.png"
 plt.savefig(graph_file, dpi=300)
 plt.close()
 
-
-path = os.path.abspath(graph_file).replace("\\", "/")
-webbrowser.open_new_tab("file://" + path)
-
-print("グラフを更新しました！（graph.png ＋ ブラウザ表示）")
+print("グラフを更新しました！（static/graph.png）")
