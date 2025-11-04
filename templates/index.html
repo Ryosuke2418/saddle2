@@ -1,29 +1,21 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>駐輪場の混雑状況</title>
+    <title>自転車混雑状況</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-        th { background-color: #eee; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        .table th, .table td { border: 1px solid #ddd; padding: 8px; }
+        .table th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
-    <h1>駐輪場の自転車の数と天気</h1>
-    <table>
-        <tr>
-            <th>日時</th><th>自転車の数</th><th>天気</th><th>気温 (℃)</th>
-        </tr>
-        {% for row in data %}
-        <tr>
-            <td>{{ row["日時"] }}</td>
-            <td>{{ row["自転車の数"] }}</td>
-            <td>{{ row["天気"] }}</td>
-            <td>{{ row["気温"] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h1>自転車混雑状況</h1>
+    <div>
+        {{ table|safe }}
+    </div>
+    <div>
+        <img src="data:image/png;base64,{{ graph_url }}" alt="Graph">
+    </div>
 </body>
 </html>

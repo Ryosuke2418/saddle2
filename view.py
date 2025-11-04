@@ -4,9 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import os
 
-# ==============================
-# matplotlib 日本語対応
-# ==============================
+
 matplotlib.use("Agg")
 matplotlib.rcParams['font.family'] = 'Meiryo'
 
@@ -15,9 +13,7 @@ GRAPH_FILE = "graph.png"
 
 app = Flask(__name__)
 
-# ==============================
-# CSVからグラフ作成
-# ==============================
+
 def generate_graph():
     if not os.path.isfile(CSV_FILE):
         return False
@@ -40,9 +36,7 @@ def generate_graph():
     plt.close()
     return True
 
-# ==============================
-# ルート
-# ==============================
+
 HTML_TEMPLATE = """
 <!doctype html>
 <title>CSVの自転車混雑状況</title>
@@ -63,8 +57,6 @@ def index():
 def graph_png():
     return send_file(GRAPH_FILE, mimetype="image/png")
 
-# ==============================
-# サーバー起動
-# ==============================
+
 if __name__ == "__main__":
     app.run(debug=True)
