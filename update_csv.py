@@ -60,7 +60,7 @@ with open(csv_file, "a", newline="", encoding="utf-8") as csvfile:
 print("CSVに記録しました！")
 
 
-df = pd.read_csv(csv_file, encoding="cp932")
+df = pd.read_csv(csv_file, encoding="utf-8")
 
 
 df["日時"] = pd.to_datetime(df["日時"], errors="coerce")
