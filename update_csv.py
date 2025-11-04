@@ -51,7 +51,7 @@ weekday = weekday_map[now.weekday()]
 csv_file = "saddle_data.csv"
 file_exists = os.path.isfile(csv_file)
 
-with open(csv_file, "a", newline="", encoding="cp932") as csvfile:
+with open(csv_file, "a", newline="", encoding="utf-8") as csvfile:
     writer = csv.writer(csvfile)
     if not file_exists:
         writer.writerow(["日時", "自転車の数", "天気", "気温", "曜日"])
